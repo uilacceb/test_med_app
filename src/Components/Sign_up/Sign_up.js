@@ -1,124 +1,80 @@
-import React from 'react'
-import "./Sign_Up.css"
+// Following code has been commented with appropriate comments for your reference.
+import React, { useState } from 'react';
+import './Sign_Up.css'
+import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../../config';
 
-function SignUp() {
+// Function component for Sign Up form
+const Sign_Up = () => {
+  // State variables using useState hook
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [showerr, setShowerr] = useState(''); // State to show error messages
+  const navigate = useNavigate(); // Navigation hook from react-router
+
+  // Function to handle form submission
+  const register = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, phone }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();  // Get plain text if JSON parsing fails
+        throw new Error(text || `Error ${response.status}`);
+      }
+
+      const json = await response.json(); // Parse only if successful
+      if (json.authtoken) {
+        sessionStorage.setItem("auth-token", json.authtoken);
+        navigate("/");
+        window.location.reload();
+      } else {
+        setShowerr(json.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error.message);
+      setShowerr(error.message);
+    }
+  };
+
+
+  // JSX to render the Sign Up form
   return (
-    <div className="container" style={{ marginTop: "5%" }}>
-      {" "}
-      {/* Main container with margin-top */}
+    <div className="container" style={{ marginTop: '5%' }}>
       <div className="signup-grid">
-        {" "}
-        {/* Grid layout for sign-up form */}
-        <div className="signup-text">
-          {" "}
-          {/* Title for the sign-up form */}
-          <h1>Sign Up</h1>
-        </div>
-        <div className="signup-text1" style={{ textAlign: "left" }}>
-          {" "}
-          {/* Text for existing members to log in */}
-          Already a member?{" "}
-          <span>
-            <a href="../Login/Login.html" style={{ color: "#2190FF" }}>
-              {" "}
-              Login
-            </a>
-          </span>
-        </div>
         <div className="signup-form">
-          {" "}
-          {/* Form for user sign-up */}
-          <form>
-            {" "}
-            {/* Start of the form */}
+          <form method="POST" onSubmit={register}>
             <div className="form-group">
-              {" "}
-              {/* Form group for user's name */}
-              <label htmlFor="name">Name</label> {/* Label for name input field */}
-              <input
-                type="text"
-                name="name"
-                id="name"
-                required=""
-                className="form-control"
-                placeholder="Enter your name"
-                aria-describedby="helpId"
-              />{" "}
-              {/* Text input field for name */}
+              <label htmlFor="email">Email</label>
+              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="form-control" placeholder="Enter your email" aria-describedby="helpId" />
+              {showerr && <div className="err" style={{ color: 'red' }}>{showerr}</div>}
             </div>
             <div className="form-group">
-              {" "}
-              {/* Form group for user's phone number */}
-              <label htmlFor="phone">Phone</label>{" "}
-              {/* Label for phone input field */}
-              <input
-                type="tel"
-                name="phone"
-                id="phone"
-                required=""
-                className="form-control"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                placeholder="Enter your phone number"
-                aria-describedby="helpId"
-              />{" "}
-              {/* Tel input field for phone number */}
+              <label htmlFor="name">Name</label>
+              <input value={name} type="text" onChange={(e) => setName(e.target.value)} name="name" id="name" className="form-control" placeholder="Enter your name" aria-describedby="helpId" />
             </div>
             <div className="form-group">
-              {" "}
-              {/* Form group for user's email */}
-              <label htmlFor="email">Email</label>{" "}
-              {/* Label for email input field */}
-              <input
-                type="email"
-                name="email"
-                id="email"
-                required=""
-                className="form-control"
-                placeholder="Enter your email"
-                aria-describedby="helpId"
-              />{" "}
-              {/* Email input field */}
+              <label htmlFor="phone">Phone</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" name="phone" id="phone" className="form-control" placeholder="Enter your phone number" aria-describedby="helpId" />
             </div>
             <div className="form-group">
-              {" "}
-              {/* Form group for user's password */}
-              <label htmlFor="password">Password</label>{" "}
-              {/* Label for password input field */}
-              <input
-                name="password"
-                id="password"
-                required=""
-                className="form-control"
-                placeholder="Enter your password"
-                aria-describedby="helpId"
-              />{" "}
-              {/* Password input field */}
+              <label htmlFor="password">Password</label>
+              <input value={password} onChange={(e) => setPassword(e.target.value)} name="password" id="password" className="form-control" placeholder="Enter your password" aria-describedby="helpId" />
             </div>
-            <div className="btn-group">
-              {" "}
-              {/* Button group for form submission and reset */}
-              <button
-                type="submit"
-                className="btn btn-primary mb-2 mr-1 waves-effect waves-light"
-              >
-                Submit
-              </button>{" "}
-              {/* Submit button */}
-              <button
-                type="reset"
-                className="btn btn-danger mb-2 waves-effect waves-light"
-              >
-                Reset
-              </button>{" "}
-              {/* Reset button */}
-            </div>
-          </form>{" "}
-          {/* End of the form */}
+            <button onClick={register}>register</button>
+            <button>reset</button>
+          </form>
         </div>
       </div>
     </div>
-
-  )
+  );
 }
 
-export default SignUp
+export default Sign_Up; // Export the Sign_Up component for use in other components

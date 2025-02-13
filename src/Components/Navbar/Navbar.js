@@ -1,50 +1,101 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./navbar.css"
 
-function Navbar() {
+import "./navbar.css";
+
+
+
+const Navbar = () => {
+  const [click, setClick] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const handleClick = () => setClick(!click);
+
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("auth-token");
+    sessionStorage.removeItem("name");
+    sessionStorage.removeItem("email");
+    sessionStorage.removeItem("phone");
+    // remove email phone
+    localStorage.removeItem("doctorData");
+    setIsLoggedIn(false);
+    // setUsername("");
+
+    // Remove the reviewFormData from local storage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith("reviewFormData_")) {
+        localStorage.removeItem(key);
+      }
+    }
+    setEmail('');
+    window.location.reload();
+  }
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  }
+  useEffect(() => {
+    const storedemail = sessionStorage.getItem("email");
+
+    if (storedemail) {
+      setIsLoggedIn(true);
+      setUsername(storedemail);
+    }
+  }, []);
   return (
-    <div>    <
-      nav>
-      {/* Navigation logo section */}
+    <nav>
       <div className="nav__logo">
-        {/* Link to the home page */}
-        <a href="/">
-          StayHealthy
-          <img src="../pictures/doctor logo.png" height={39} width={39} />
-        </a>
+        <Link to="/">
+          StayHealthy <i style={{ color: '#2190FF' }} className="fa fa-user-md"></i></Link>
+        <span>.</span>
       </div>
-      <a href="/">
-        {/* Navigation icon section with an onClick event listener */}
-        <div className="nav__icon" onclick="{handleClick}">
-          {/* Font Awesome icon for bars (hamburger menu) */}
-          <i className="fa fa-times fa fa-bars" />
-        </div>
-        {/* Unordered list for navigation links with 'active' class */}
-      </a>
-      <ul className="nav__links active">
-        <a href="/">{/* List item for the 'Home' link */}</a>
+      <div className="nav__icon" onClick={handleClick}>
+        <i className={click ? "fa fa-times" : "fa fa-bars"}></i>
+      </div>
+      <ul className={click ? 'nav__links active' : 'nav__links'}>
         <li className="link">
-          <a href="/"></a>
-          <a href="../Landing_Page/LandingPage.html">Home</a>
+          <Link to="/">Home</Link>
         </li>
-        {/* List item for the 'Appointments' link */}
         <li className="link">
-          <a href="#">Appointments</a>
+          <Link to="/search/doctors">Appointments</Link>
         </li>
-        {/* List item for the 'Sign Up' link with a button */}
         <li className="link">
-          <Link to="/Sign_up">
-            <button className="btn1">Sign Up</button>
-          </Link>
+          <Link to="/healthblog">Health Blog</Link>
         </li>
-        {/* List item for the 'Login' link with a button */}
         <li className="link">
-          <Link to="/Login">
-            <button className="btn1">Login</button>
-          </Link>
+          <Link to="/reviews">Reviews</Link>
         </li>
+        {isLoggedIn ? (
+          <>
+            <p>Welcome, {username}</p>
+            <li className="link">
+              <button className="btn2" onClick={handleLogout}>
+                Logout
+              </button>
+            </li>
+
+          </>
+        ) : (
+          <>
+            <li className="link">
+              <Link to="/Sign_up">
+                <button className="btn1">Sign Up</button>
+              </Link>
+            </li>
+            <li className="link">
+              <Link to="/Login">
+                <button className="btn1">Login</button>
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
-    </nav></div>
-  )
-}
+    </nav>
+  );
+};
+
 export default Navbar;
