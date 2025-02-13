@@ -47,7 +47,6 @@ router.post('/register', [
     const error = validationResult(req);
     if (!error.isEmpty()) {
         return res.status(400).json({ error: error.array() });
-        
     }
 
     try {
@@ -73,12 +72,11 @@ router.post('/register', [
             }
         }
         const authtoken = jwt.sign(payload, JWT_SECRET);
-        console.log("User registered successfully:", newUser);
         res.json({ authtoken });
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).send("Internal Server Error");
     }
 
 });
@@ -119,7 +117,7 @@ router.post('/login', [
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).send("Internal Server Error");
     }
 });
 
@@ -154,7 +152,7 @@ router.put('/update', [
         res.json({ authtoken });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).send("Internal Server Error");
     }
 });
 
@@ -186,7 +184,7 @@ router.get('/user', async (req, res) => {
         res.json(userDetails);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).send("Internal Server Error");
     }
 });
 router.put('/user', [
@@ -226,9 +224,12 @@ router.put('/user', [
         res.json({ authtoken });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).send("Internal Server Error");
     }
 });
 
+router.get('/test', (req, res) => {
+    res.json({ message: 'Auth API is working!' });
+});
 
 module.exports = router;
