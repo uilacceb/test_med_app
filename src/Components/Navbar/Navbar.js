@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./navbar.css"
 
 function Navbar() {
@@ -32,15 +33,15 @@ function Navbar() {
         </li>
         {/* List item for the 'Sign Up' link with a button */}
         <li className="link">
-          <a href="../Sign_Up//Sign_Up.html">
+          <Link to="/Sign_up">
             <button className="btn1">Sign Up</button>
-          </a>
+          </Link>
         </li>
         {/* List item for the 'Login' link with a button */}
         <li className="link">
-          <a href="../Login/Login.html">
+          <Link to="/Login">
             <button className="btn1">Login</button>
-          </a>
+          </Link>
         </li>
       </ul>
     </nav></div>
