@@ -41,10 +41,12 @@ const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
                 </div>
                 {/* for reference  */}
                 <div>
+                    <Link to="/AppointmentForm">
                     <button className='book-appointment-btn'>
                         <div>Book Appointment</div>
                         <div>No Booking Fee</div>
                     </button>
+                    </Link>
                 </div>
             </div>
 
