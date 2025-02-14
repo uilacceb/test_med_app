@@ -12,6 +12,7 @@ import Landing_Page from './Components/Landing_Page/Landing_Page.js';
 import SignUp from './Components/Sign_up/Sign_up.js';
 import Login from './Components/Login/Login.js';
 import InstantConsultation from "./Components/InstantConsultationBooking/InstantConsultationBooking/InstantConsultation.js"
+import FindDoctorSearch from "./Components/FindDoctorSearch/FindDoctorSearch.js"
 
 // Function component for the main App
 function App() {
@@ -31,6 +32,7 @@ function App() {
                     <Route path="Sign_up" element={<SignUp />} />
                     <Route path="Login" element={<Login />} />
                     <Route path="/instant-consultation" element={<InstantConsultation />} />
+                    <Route path="/findDoctor" element={<FindDoctorSearch />} />
                 </Routes>
             </BrowserRouter>
         </div>
