@@ -32,7 +32,14 @@ app.use(express.json());
 //     allowedHeaders: ['Content-Type', 'Authorization']
 // }));
 
-app.use(cors());
+
+
+app.use(cors({
+    origin: "*", // Replace with frontend domain if needed
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization,Email"
+}));
+
 
 
 // Connect to MongoDB
