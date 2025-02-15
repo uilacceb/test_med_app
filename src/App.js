@@ -16,6 +16,7 @@ import FindDoctorSearch from "./Components/FindDoctorSearch/FindDoctorSearch.js"
 import DoctorCard from './Components/DoctorCard/DoctorCard.js';
 import BookingConsultation from './Components/BookingConsultation.js';
 import Notification from './Components/Notification/Notification.js';
+import ReviewForm from './Components/ReviewForm/ReviewForm.js';
 
 // Function component for the main App
 function App() {
@@ -29,7 +30,9 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/instant-consultation" element={<InstantConsultation />} />
-                        <Route path="<component_route>" element={<component_name />} /> //Replace the component_route with the component path and component_name with the component name as imported in the App.js file.
+                        <Route path="/findDoctor" element={<FindDoctorSearch />} />
+                        <Route path="/doctorCard" element={<DoctorCard />} />
+                        <Route path="/reviews" element={<ReviewForm />} />
 
                     </Routes>
                 </Notification>
