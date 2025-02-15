@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import "./navbar.css";
+import ProfileCard from "../ProfileCard/ProfileCard";
 
 
 
@@ -85,7 +86,7 @@ const Navbar = () => {
                 {isLoggedIn ? (
                     <>
                         <li className="link">
-                            <span>Welcome, {username}</span>
+                            <ProfileCard />
                         </li>
                         <li className="link">
                             <button className="btn2" onClick={handleLogout}>

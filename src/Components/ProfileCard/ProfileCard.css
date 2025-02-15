@@ -1,0 +1,9 @@
+/* Optional: Add these if you want to customize the profile dropdown specifically */
+.welcome-user .dropdown-menu {
+    min-width: 150px; /* Adjust dropdown width */
+}
+
+.welcome-user .dropdown-menu li a {
+    display: block;
+    padding: 8px 16px;
+}
