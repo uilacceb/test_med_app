@@ -15,6 +15,7 @@ import InstantConsultation from "./Components/InstantConsultationBooking/Instant
 import FindDoctorSearch from "./Components/FindDoctorSearch/FindDoctorSearch.js"
 import DoctorCard from './Components/DoctorCard/DoctorCard.js';
 import BookingConsultation from './Components/BookingConsultation.js';
+import Notification from './Components/Notification/Notification.js';
 
 // Function component for the main App
 function App() {
@@ -22,22 +23,16 @@ function App() {
     // Render the main App component
     return (
         <div className="App">
-            {/* Set up BrowserRouter for routing */}
             <BrowserRouter>
-                {/* Display the Navbar component */}
-                <Navbar />
+                <Notification>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/instant-consultation" element={<InstantConsultation />} />
+                        <Route path="<component_route>" element={<component_name />} /> //Replace the component_route with the component path and component_name with the component name as imported in the App.js file.
 
-                {/* Set up the Routes for different pages */}
-                <Routes>
-
-                    <Route path="/" element={<Landing_Page />} />
-                    <Route path="Sign_up" element={<SignUp />} />
-                    <Route path="Login" element={<Login />} />
-                    <Route path="/instant-consultation" element={<InstantConsultation />} />
-                    <Route path="/findDoctor" element={<FindDoctorSearch />} />
-                    <Route path="/doctorCard" element={<DoctorCard />} />
-                    <Route path="/BookingConsultation" element={<BookingConsultation />} />
-                </Routes>
+                    </Routes>
+                </Notification>
             </BrowserRouter>
         </div>
     );
