@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import './ReviewForm.css';
 
@@ -6,6 +6,7 @@ const ReviewForm = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [reviewedDoctors, setReviewedDoctors] = useState(new Set());
+    const [appointments, setAppointments] = useState([]);
     const [formData, setFormData] = useState({
         userName: '',
         review: '',
@@ -13,18 +14,13 @@ const ReviewForm = () => {
     });
     const [hoveredRating, setHoveredRating] = useState(0);
 
-    const doctors = [
-        {
-            serialNumber: 1,
-            name: 'Dr. John Doe',
-            speciality: 'Cardiology',
-        },
-        {
-            serialNumber: 2,
-            name: 'Dr. Jane Smith',
-            speciality: 'Dermatology',
+    // Load appointments from localStorage on component mount
+    useEffect(() => {
+        const savedAppointments = localStorage.getItem('appointments');
+        if (savedAppointments) {
+            setAppointments(JSON.parse(savedAppointments));
         }
-    ];
+    }, []);
 
     const handleFeedback = (doctor) => {
         setSelectedDoctor(doctor);
@@ -68,49 +64,73 @@ const ReviewForm = () => {
         setHoveredRating(rating);
     };
 
+    // Transform appointments for display
+    const doctorsToReview = appointments.map((appointment, index) => ({
+        serialNumber: index + 1,
+        name: appointment.doctorName,
+        speciality: appointment.doctorSpeciality
+    }));
+
     return (
         <div className="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Serial Number</th>
-                        <th>Doctor Name</th>
-                        <th>Doctor Speciality</th>
-                        <th>Provide feedback</th>
-                        <th>Review Given</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {doctors.map((doctor) => (
-                        <tr key={doctor.serialNumber}>
-                            <td>{doctor.serialNumber}</td>
-                            <td>{doctor.name}</td>
-                            <td>{doctor.speciality}</td>
-                            <td>
-                                <button
-                                    className="feedback-button"
-                                    onClick={() => handleFeedback(doctor)}
-                                    disabled={reviewedDoctors.has(doctor.serialNumber)}
-                                    style={{
-                                        backgroundColor: reviewedDoctors.has(doctor.serialNumber) ? '#cccccc' : '#007bff',
-                                        cursor: reviewedDoctors.has(doctor.serialNumber) ? 'not-allowed' : 'pointer'
-                                    }}
-                                >
-                                    Click Here
-                                </button>
-                            </td>
-                            <td>
-                                {reviewedDoctors.has(doctor.serialNumber) && "✓"}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <img src="/api/placeholder/150/150" alt="Logo" />
+                <div className="search-container">
+                    <input 
+                        type="text" 
+                        placeholder="Search doctors, clinics, hospitals, etc." 
+                        className="search-input"
+                    />
+                </div>
+            </div>
 
-            {isModalOpen && (
+            {doctorsToReview.length > 0 ? (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serial Number</th>
+                            <th>Doctor Name</th>
+                            <th>Doctor Speciality</th>
+                            <th>Provide feedback</th>
+                            <th>Review Given</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {doctorsToReview.map((doctor) => (
+                            <tr key={doctor.serialNumber}>
+                                <td>{doctor.serialNumber}</td>
+                                <td>{doctor.name}</td>
+                                <td>{doctor.speciality}</td>
+                                <td>
+                                    <button
+                                        className="feedback-button"
+                                        onClick={() => handleFeedback(doctor)}
+                                        disabled={reviewedDoctors.has(doctor.serialNumber)}
+                                        style={{
+                                            backgroundColor: reviewedDoctors.has(doctor.serialNumber) ? '#cccccc' : '#007bff',
+                                            cursor: reviewedDoctors.has(doctor.serialNumber) ? 'not-allowed' : 'pointer'
+                                        }}
+                                    >
+                                        Click Here
+                                    </button>
+                                </td>
+                                <td style={{ textAlign: 'center' }}>
+                                    {reviewedDoctors.has(doctor.serialNumber) && "review received"}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                    No appointments booked yet. Book an appointment to leave a review.
+                </div>
+            )}
+
+            {isModalOpen && selectedDoctor && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h2>Provide Feedback for {selectedDoctor?.name}</h2>
+                        <h2>Provide Feedback for {selectedDoctor.name}</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="userName">Your Name:</label>
@@ -135,9 +155,10 @@ const ReviewForm = () => {
                                     rows="4"
                                 ></textarea>
                             </div>
+
                             <div className="form-group">
                                 <label>Rating:</label>
-                                <div className="rating-container" style={{ display: 'flex', gap: '8px' }}>
+                                <div style={{ display: 'flex', gap: '8px' }}>
                                     {[1, 2, 3, 4, 5].map((rating) => (
                                         <Star
                                             key={rating}
@@ -152,9 +173,14 @@ const ReviewForm = () => {
                                     ))}
                                 </div>
                             </div>
+
                             <div className="modal-buttons">
                                 <button type="submit" className="submit-button">Submit</button>
-                                <button type="button" className="cancel-button" onClick={handleCloseModal}>
+                                <button 
+                                    type="button" 
+                                    className="cancel-button"
+                                    onClick={handleCloseModal}
+                                >
                                     Cancel
                                 </button>
                             </div>
